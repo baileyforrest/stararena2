@@ -60,6 +60,8 @@ var Player;
     }
 
     vec3.normalize(this.accelDir, this.accelDir);
+
+    // Handle rotation
     var worldCoord = Util.screenToWorld(this.mousePos);
     var mouseVec = vec3.create();
     vec3.subtract(mouseVec, worldCoord, this.position);

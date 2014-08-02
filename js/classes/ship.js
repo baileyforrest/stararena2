@@ -4,7 +4,7 @@
  * Main ship class
  */
 
-/* global Renderable */
+/* global Movable */
 
 var Ship;
 
@@ -20,11 +20,7 @@ var Ship;
    * @class
    */
   Ship = function (params) {
-    Renderable.call(this, params);
-
-    this.velocity = vec3.fromValues(0.0, 0.0, 0.0);
-    this.accelDir = vec3.fromValues(0.0, 0.0, 0.0);
-    this.accelVec = vec3.fromValues(0.0, 0.0, 0.0);
+    Movable.call(this, params);
 
     this.radius = BASE_RAD;
     this.hull = BASE_DEFENSE;
@@ -34,19 +30,8 @@ var Ship;
 
     this.initView();
   };
-  // Inherits from Renderable
-  Ship.prototype = Object.create(Renderable.prototype);
-
-  /**
-   * Update velocity and position
-   */
-  Ship.prototype.update = function (tick) {
-    this.react();
-    vec3.scale(this.accelVec, this.accelDir, this.accel * tick / 1000.0);
-
-    vec3.add(this.velocity, this.velocity, this.accelVec);
-    vec3.add(this.position, this.position, this.velocity);
-  };
+  // Inherits from Movable
+  Ship.prototype = Object.create(Movable.prototype);
 
   /**
    * Update orientation, acceleration, target, etc

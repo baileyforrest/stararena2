@@ -68,8 +68,8 @@
    * Register event callbacks
    */
   Controller.prototype.registerEvents = function (canvas) {
-    canvas.onkeydown = function (event) { ctrler.keyDown(event); };
-    canvas.onkeyup = function (event) { ctrler.keyUp(event); };
+    document.onkeydown = function (event) { ctrler.keyDown(event); };
+    document.onkeyup = function (event) { ctrler.keyUp(event); };
 
     canvas.onmousedown = function (event) { ctrler.mouseDown(event); };
     canvas.onmouseup = function (event) { ctrler.mouseUp(event); };
