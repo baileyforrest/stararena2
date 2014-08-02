@@ -6,6 +6,14 @@
 
 /* global mvPushMatrix, mvPopMatrix, getShader */
 
+/**
+ * Class for any renderable object.
+ *
+ * To use the same shaders, a class can simply replace vertices, colors, and
+ * indices and override initBuffers to use the new values
+ *
+ * @class
+ */
 var Renderable;
 
 (function () {
@@ -27,13 +35,14 @@ var Renderable;
     0, 1, 2
   ];
 
-  /**
-   * @constructor Class for any renderable object
-   */
+  var vertexShaderPath = "assets/glsl/basic_vertex.glsl";
+  var fragmentShaderPath = "assets/glsl/basic_fragment.glsl";
+
   Renderable = function (params) {
     this.position = vec3.fromValues(0.0, 0.0, 0.0);
     this.rotation = 0.0;
     this.scale = vec3.fromValues(1.0, 1.0, 1.0);
+    this.filesLoaded = false;
 
     if (!params) {
       return;
@@ -96,30 +105,42 @@ var Renderable;
   };
 
   Renderable.prototype.initShaders = function () {
-    // TODO: I don't like this, we should load these from external files
-    var vertexShader = getShader(gl, "shader-vs")
-      , fragmentShader = getShader(gl, "shader-fs");
+    this.initShadersPath(vertexShaderPath, fragmentShaderPath);
+  };
 
-    this.shaderProgram = gl.createProgram();
-    gl.attachShader(this.shaderProgram, vertexShader);
-    gl.attachShader(this.shaderProgram, fragmentShader);
-    gl.linkProgram(this.shaderProgram);
+  Renderable.prototype.initShadersPath =
+    function (vertexShaderPath, fragmentShaderPath) {
 
-    if (!gl.getProgramParameter(this.shaderProgram, gl.LINK_STATUS)) {
-      alert("Could not initialise shaders");
-    }
+    var self = this;
 
-    this.shaderProgram.vertexPositionAttribute =
-      gl.getAttribLocation(this.shaderProgram, "aVertexPosition");
+    loadFiles([vertexShaderPath, fragmentShaderPath], function (textArray) {
+      var vertexShader, fragmentShader;
+      vertexShader = loadShader(gl,gl.VERTEX_SHADER, textArray[0]);
+      fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, textArray[1]);
 
-    this.shaderProgram.vertexColorAttribute =
-      gl.getAttribLocation(this.shaderProgram, "aVertexColor");
+      self.shaderProgram = gl.createProgram();
+      gl.attachShader(self.shaderProgram, vertexShader);
+      gl.attachShader(self.shaderProgram, fragmentShader);
+      gl.linkProgram(self.shaderProgram);
 
-    this.shaderProgram.pMatrixUniform =
-      gl.getUniformLocation(this.shaderProgram, "uPMatrix");
+      if (!gl.getProgramParameter(self.shaderProgram, gl.LINK_STATUS)) {
+        alert("Could not initialise shaders");
+      }
 
-    this.shaderProgram.mvMatrixUniform =
-      gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
+      self.shaderProgram.vertexPositionAttribute =
+        gl.getAttribLocation(self.shaderProgram, "aVertexPosition");
+
+      self.shaderProgram.vertexColorAttribute =
+        gl.getAttribLocation(self.shaderProgram, "aVertexColor");
+
+      self.shaderProgram.pMatrixUniform =
+        gl.getUniformLocation(self.shaderProgram, "uPMatrix");
+
+      self.shaderProgram.mvMatrixUniform =
+        gl.getUniformLocation(self.shaderProgram, "uMVMatrix");
+
+      self.filesLoaded = true;
+    });
   };
 
   /**
@@ -138,14 +159,18 @@ var Renderable;
   };
 
   Renderable.prototype.render = function () {
+    if (!this.filesLoaded) {
+      return;
+    }
+
     this.useShaders();
 
     mvPushMatrix();
 
     // Transform
-    mat4.scale(mvMatrix, mvMatrix, this.scale);
-    mat4.rotateZ(mvMatrix, mvMatrix, this.rotation);
     mat4.translate(mvMatrix, mvMatrix, this.position);
+    mat4.rotateZ(mvMatrix, mvMatrix, this.rotation);
+    mat4.scale(mvMatrix, mvMatrix, this.scale);
 
     // Render
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexPositionBuffer);
