@@ -3,6 +3,7 @@
  *
  * Global variables
  */
+/* global gl:true, mvMatrix:true, pMatrix:true */
 
 /** The gl context */
 var gl;

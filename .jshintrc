@@ -1,0 +1,37 @@
+{
+  "predef": [
+    "console",
+    "__dirname",
+    "require",
+    "exports",
+    "module",
+    "mat4",
+    "mat2",
+    "vec3",
+    "mvMatrix",
+    "pMatrix",
+    "gl",
+    "document",
+    "alert",
+    "Float32Array",
+    "Uint16Array",
+    "canvas"
+  ],
+
+  // Enforcing options
+  "strict": true,
+  "curly": true,
+  "plusplus": true,
+  "quotmark": true,
+  "undef": true,
+  "trailing": true,
+  "camelcase": true,
+
+  // Legacy Options
+  "white": true,
+
+  // Relaxing options
+  "laxcomma": true,
+
+  "indent": 2
+}
