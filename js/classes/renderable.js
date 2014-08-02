@@ -4,7 +4,7 @@
  * Renderable object
  */
 
-/* global mvPushMatrix, mvPopMatrix, getShader */
+/* global Util */
 
 /**
  * Class for any renderable object.
@@ -113,10 +113,12 @@ var Renderable;
 
     var self = this;
 
-    loadFiles([vertexShaderPath, fragmentShaderPath], function (textArray) {
+    Util.loadFiles(
+      [vertexShaderPath, fragmentShaderPath], function (textArray) {
+
       var vertexShader, fragmentShader;
-      vertexShader = loadShader(gl,gl.VERTEX_SHADER, textArray[0]);
-      fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, textArray[1]);
+      vertexShader = Util.loadShader(gl, gl.VERTEX_SHADER, textArray[0]);
+      fragmentShader = Util.loadShader(gl, gl.FRAGMENT_SHADER, textArray[1]);
 
       self.shaderProgram = gl.createProgram();
       gl.attachShader(self.shaderProgram, vertexShader);
@@ -165,7 +167,7 @@ var Renderable;
 
     this.useShaders();
 
-    mvPushMatrix();
+    Util.mvPushMatrix();
 
     // Transform
     mat4.translate(mvMatrix, mvMatrix, this.position);
@@ -191,7 +193,7 @@ var Renderable;
       gl.TRIANGLES, this.vertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0
     );
 
-    mvPopMatrix();
+    Util.mvPopMatrix();
   };
 
 }());

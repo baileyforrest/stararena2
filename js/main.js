@@ -3,8 +3,9 @@
  *
  * Starting point and top level functions
  */
-/* global canvas:true, gl:true, requestAnimFrame */
-/* global stage:true, Stage, controller:true, Controller */
+/* global gl:true, requestAnimFrame */
+/* global stage:true, controller:true */
+/* global Stage, Controller, Ship, Player */
 
 var main;
 
@@ -70,6 +71,7 @@ var main;
     var canvas = document.getElementById("canvas");
     initGL(canvas);
     stage = new Stage();
+    controller.registerEvents(canvas);
 
     stage.addShip(new Ship({ position: vec3.fromValues(-3.0, 0.0, 0.0) }));
     stage.addShip(new Player({

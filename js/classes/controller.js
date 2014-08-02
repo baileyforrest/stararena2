@@ -10,7 +10,7 @@
 
   var Controller = function (params) {
     this.currentPressedKeys = {};
-    this.mouseDown = false;
+    this.isMouseDown = false;
     this.mousePos = vec3.fromValues(0.0, 0.0, 0.0);
   };
 
@@ -43,11 +43,11 @@
   };
 
   Controller.prototype.mouseDown = function (event) {
-    this.mouseDown = true;
+    this.isMouseDown = true;
   };
 
   Controller.prototype.mouseUp = function (event) {
-    this.mouseDown = false;
+    this.isMouseDown = false;
   };
 
   Controller.prototype.mouseMove = function (event) {
@@ -61,15 +61,19 @@
 
   var ctrler = new Controller();
 
-  // Register event callbacks
-  document.onkeydown = function (event) { ctrler.keyDown(event); };
-  document.onkeyup = function (event) { ctrler.keyUp(event); };
-
-  document.onmousedown = function (event) { ctrler.mouseDown(event); };
-  document.onmouseup = function (event) { ctrler.mouseUp(event); };
-  document.onmousemove = function (event) { ctrler.mouseMove(event); };
-
   // Set the singleton
   controller = ctrler;
 
+  /**
+   * Register event callbacks
+   */
+  Controller.prototype.registerEvents = function (canvas) {
+    canvas.onkeydown = function (event) { ctrler.keyDown(event); };
+    canvas.onkeyup = function (event) { ctrler.keyUp(event); };
+
+    canvas.onmousedown = function (event) { ctrler.mouseDown(event); };
+    canvas.onmouseup = function (event) { ctrler.mouseUp(event); };
+    canvas.onmousemove = function (event) { ctrler.mouseMove(event); };
+
+  };
 }());

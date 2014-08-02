@@ -8,6 +8,7 @@
     "mat4",
     "mat2",
     "vec3",
+    "vec4",
     "mvMatrix",
     "pMatrix",
     "gl",

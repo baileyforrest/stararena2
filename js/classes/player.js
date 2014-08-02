@@ -3,7 +3,7 @@
  *
  * Player class
  */
-/* global Ship, controller */
+/* global Ship, controller, Util */
 
 var Player;
 
@@ -60,20 +60,10 @@ var Player;
     }
 
     vec3.normalize(this.accelDir, this.accelDir);
-
-    // Change direction to face mouse
-    var x = this.mousePos[0]
-      , y = gl.viewportHeight - this.mousePos[1];
-
-    var transMat = mat4.create()
-      , worldCoord = vec3.create()
-    ;
-
-    mat4.multiply(transMat, pMatrix, mvMatrix);
-    mat4.invert(transMat, transMat);
-
-    vec3.transformMat4(worldCoord, this.mousePos, transMat);
-    console.log(worldCoord);
+    var worldCoord = Util.screenToWorld(this.mousePos);
+    var mouseVec = vec3.create();
+    vec3.subtract(mouseVec, worldCoord, this.position);
+    this.rotation = Math.atan2(mouseVec[1], mouseVec[0]) - Math.PI / 2;
   };
 
   Player.prototype.update = function (tick) {

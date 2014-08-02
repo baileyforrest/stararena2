@@ -6,26 +6,26 @@
 
 /* global mvMatrix:true */
 
-var mvPushMatrix;
-var mvPopMatrix;
-var degToRad;
-var getShader;
-var loadFile;
-var loadFiles;
-var loadShader;
+var Util;
 
 (function () {
   "use strict";
 
+  /**
+   * Utility class
+   */
+  Util = function () {
+  };
+
   var mvMatrixStack = [];
 
-  mvPushMatrix = function () {
+  Util.mvPushMatrix = function () {
     var copy = mat4.create();
     mat4.copy(copy, mvMatrix);
     mvMatrixStack.push(copy);
   };
 
-  mvPopMatrix = function () {
+  Util.mvPopMatrix = function () {
     if (mvMatrixStack.length === 0) {
       throw "Invalid popMatrix!";
     }
@@ -39,7 +39,7 @@ var loadShader;
    * Based on source from here:
    * http://stackoverflow.com/questions/4878145/javascript-and-webgl-external-scripts
    */
-  loadFiles = function (urls, callback) {
+  Util.loadFiles = function (urls, callback) {
     var numUrls = urls.length
       , numComplete = 0
       , result = []
@@ -55,11 +55,11 @@ var loadShader;
     }
 
     for (var i = 0; i < numUrls; i += 1) {
-      loadFile(urls[i], i, partialCallback);
+      Util.loadFile(urls[i], i, partialCallback);
     }
   };
 
-  loadFile = function (filename, index, callback) {
+  Util.loadFile = function (filename, index, callback) {
     var request = new XMLHttpRequest();
     request.open("GET", filename);
     request.onreadystatechange = function () {
@@ -70,7 +70,7 @@ var loadShader;
     request.send();
   };
 
-  loadShader = function (gl, type, shaderText) {
+  Util.loadShader = function (gl, type, shaderText) {
     var shader;
 
     switch (type) {
@@ -95,40 +95,41 @@ var loadShader;
     return shader;
   };
 
+  /**
+   * Transformes screen coordinates to world coordinates
+   *
+   * Code based on this source:
+   *
+   * http://stackoverflow.com/questions/10985487/android-opengl-es-2-0-screen-coordinates-to-world-coordinates
+   */
+  Util.screenToWorld = function (screenCoord) {
+    var x = screenCoord[0]
+      , y = gl.viewportHeight - screenCoord[1]
+    ;
 
-  getShader = function (gl, id) {
-    var shaderScript, str, k, shader;
-    shaderScript = document.getElementById(id);
-    if (!shaderScript) {
-      return null;
-    }
+    var transMat = mat4.create()
+      , worldCoord = vec4.create()
+      , normalizedPoint
+      , result
+    ;
 
-    str = "";
-    k = shaderScript.firstChild;
-    while (k) {
-      if (k.nodeType == 3) {
-        str += k.textContent;
-      }
-      k = k.nextSibling;
-    }
+    normalizedPoint = vec4.fromValues(
+      x * 2.0 / gl.viewportWidth - 1.0, y * 2.0 / gl.viewportHeight - 1.0,
+      -1.0, 1.0
+    );
 
-    if (shaderScript.type == "x-shader/x-fragment") {
-      shader = gl.createShader(gl.FRAGMENT_SHADER);
-    } else if (shaderScript.type == "x-shader/x-vertex") {
-      shader = gl.createShader(gl.VERTEX_SHADER);
+    mat4.multiply(transMat, pMatrix, mvMatrix);
+    mat4.invert(transMat, transMat);
+
+    vec4.transformMat4(worldCoord, normalizedPoint, transMat);
+
+    if (worldCoord[3] !== 0.0) {
+      return vec3.fromValues(
+        worldCoord[0] / worldCoord[3], worldCoord[1] / worldCoord[3], 0.0
+      );
     } else {
-      return null;
+      return vec3.fromValues(0.0, 0.0, 0.0);
     }
-
-    gl.shaderSource(shader, str);
-    gl.compileShader(shader);
-
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      alert(gl.getShaderInfoLog(shader));
-      return null;
-    }
-
-    return shader;
   };
 
 }());
