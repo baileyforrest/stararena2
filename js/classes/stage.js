@@ -10,10 +10,15 @@ var Stage;
 (function () {
   "use strict";
 
-  var STAGE_WIDTH = 50
-    , STAGE_HEIGHT = 50
+  var STAGE_WIDTH = 64
+    , STAGE_HEIGHT = 64
     , BORDER_WIDTH = 0.3
-    , GRID_WIDTH = 0.1
+    , BORDER_COLOR = [1.0, 0.0, 0.0, 1.0]
+    , GRID_WIDTH = 0.04
+    , GRID_COLOR = [0.0, 0.4, 0.0, 1.0]
+    , ALT_GRID_COLOR = [0.0, 0.0, 0.4, 1.0]
+    , GRID_SKIP = 2
+    , ALT_GRID_SKIP = 4
   ;
 
   var VERTICES = [
@@ -57,39 +62,121 @@ var Stage;
     0, 11, 2,
   ];
 
-  var BORDER_COLOR = [1.0, 0.0, 0.0, 1.0];
   var COLORS = [];
+  var i;
 
-  for (var i = 0; i < VERTICES.length; i += 1) {
+  for (i = 0; i < VERTICES.length / 3; i += 1) {
     COLORS.push.apply(COLORS, BORDER_COLOR);
   }
-/*
-  var VERTICES = [
-    // Left border
-    -STAGE_WIDTH / 2, -STAGE_HEIGHT / 2, 0.0,
-    -STAGE_WIDTH / 2, STAGE_HEIGHT / 2, 0.0,
-    -STAGE_WIDTH / 2 - 10, 0.0, 0.0,
 
-    // top border
-    -STAGE_WIDTH / 2, STAGE_HEIGHT / 2, 0.0,
-    STAGE_WIDTH / 2, STAGE_HEIGHT / 2, 0.0,
-    0.0, STAGE_HEIGHT / 2 + 10, 0.0
-  ];
+  // TODO: these functions duplicate code, consolidate similarities
 
-  var COLORS = [
-    1.0, 0.0, 0.0, 1.0,
-    0.0, 1.0, 0.0, 1.0,
-    0.0, 0.0, 1.0, 1.0,
-    1.0, 0.0, 0.0, 1.0,
-    0.0, 1.0, 0.0, 1.0,
-    0.0, 0.0, 1.0, 1.0
-  ];
+  // Create vertical grid lines
+  (function createVerticalGrids() {
+    for (i = GRID_SKIP; i < STAGE_WIDTH; i += GRID_SKIP) {
+      var nw = vec3.create()
+        , ne = vec3.create()
+        , se = vec3.create()
+        , sw = vec3.create()
+      ;
 
-  var INDICES = [
-    0, 1, 2,
-    3, 4, 5
-  ];
-  */
+      sw[0] = -STAGE_WIDTH / 2 + i - GRID_WIDTH / 2.0;
+      sw[1] = -STAGE_HEIGHT / 2;
+      sw[2] = -0.1;
+
+      se[0] = -STAGE_WIDTH / 2 + i + GRID_WIDTH / 2.0;
+      se[1] = -STAGE_HEIGHT / 2;
+      se[2] = -0.1;
+
+      nw[0] = -STAGE_WIDTH / 2 + i - GRID_WIDTH / 2.0;
+      nw[1] = STAGE_HEIGHT / 2;
+      nw[2] = -0.1;
+
+      ne[0] = -STAGE_WIDTH / 2 + i + GRID_WIDTH / 2.0;
+      ne[1] = STAGE_HEIGHT / 2;
+      ne[2] = -0.1;
+
+      var offset = VERTICES.length / 3;
+
+      VERTICES.push.apply(VERTICES, sw);
+      VERTICES.push.apply(VERTICES, se);
+      VERTICES.push.apply(VERTICES, nw);
+      VERTICES.push.apply(VERTICES, ne);
+
+      for (var j = 0; j < 4; j += 1) {
+        if ((i / GRID_SKIP) % ALT_GRID_SKIP !== 0) {
+          COLORS.push.apply(COLORS, GRID_COLOR);
+        } else {
+          console.log("foo");
+          COLORS.push.apply(COLORS, ALT_GRID_COLOR);
+        }
+      }
+
+      INDICES.push(offset + 0);
+      INDICES.push(offset + 1);
+      INDICES.push(offset + 3);
+
+      INDICES.push(offset + 3);
+      INDICES.push(offset + 2);
+      INDICES.push(offset + 0);
+    }
+  })();
+
+  // Create horizontal grid lines
+  (function createHorizontalGrids() {
+    for (i = GRID_SKIP; i < STAGE_WIDTH; i += GRID_SKIP) {
+      var nw = vec3.create()
+        , ne = vec3.create()
+        , se = vec3.create()
+        , sw = vec3.create()
+      ;
+
+      sw[0] = -STAGE_WIDTH / 2;
+      sw[1] = -STAGE_HEIGHT / 2 + i - GRID_WIDTH / 2.0;
+      sw[2] = -0.1;
+
+      nw[0] = -STAGE_WIDTH / 2;
+      nw[1] = -STAGE_HEIGHT / 2 + i + GRID_WIDTH / 2.0;
+      nw[2] = -0.1;
+
+      se[0] = STAGE_WIDTH / 2;
+      se[1] = -STAGE_HEIGHT / 2 + i - GRID_WIDTH / 2.0;
+      se[2] = -0.1;
+
+      ne[0] = STAGE_WIDTH / 2;
+      ne[1] = -STAGE_HEIGHT / 2 + i + GRID_WIDTH / 2.0;
+      ne[2] = -0.1;
+
+      var offset = VERTICES.length / 3;
+
+      VERTICES.push.apply(VERTICES, sw);
+      VERTICES.push.apply(VERTICES, se);
+      VERTICES.push.apply(VERTICES, nw);
+      VERTICES.push.apply(VERTICES, ne);
+
+      for (var j = 0; j < 4; j += 1) {
+        if ((i / GRID_SKIP) % ALT_GRID_SKIP !== 0) {
+          COLORS.push.apply(COLORS, GRID_COLOR);
+        } else {
+          console.log("foo");
+          COLORS.push.apply(COLORS, ALT_GRID_COLOR);
+        }
+      }
+
+      INDICES.push(offset + 0);
+      INDICES.push(offset + 1);
+      INDICES.push(offset + 3);
+
+      INDICES.push(offset + 3);
+      INDICES.push(offset + 2);
+      INDICES.push(offset + 0);
+    }
+  })();
+
+
+  console.log(COLORS);
+  console.log(VERTICES);
+  console.log(INDICES);
 
   // TODO: need to render background and edges
 
