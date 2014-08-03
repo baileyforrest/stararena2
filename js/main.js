@@ -44,7 +44,7 @@ var main;
     mat4.identity(mvMatrix);
     mat4.translate(mvMatrix, mvMatrix, [-cameraX, -cameraY, -CAM_DISTANCE]);
 
-    stage.renderAll();
+    stage.render();
   }
 
   var lastTime = 0;
@@ -74,6 +74,7 @@ var main;
     controller.registerEvents(canvas);
 
     stage.addShip(new Ship({ position: vec3.fromValues(-3.0, 0.0, 0.0) }));
+    stage.addShip(new Ship({ position: vec3.fromValues(-3.0, 0.0, 0.0) }));
     stage.addShip(new Player({
       position: vec3.fromValues(3.0, 0.0, 0.0)
     , updateCallback: function (player) {
@@ -81,6 +82,8 @@ var main;
         cameraY = player.position[1];
       }
     }));
+
+    stage.addProjectile(new Projectile({ position: vec3.fromValues(3.0, 0.0, 0.0) }));
 
     tick();
   };

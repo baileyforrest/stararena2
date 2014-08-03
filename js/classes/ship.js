@@ -13,7 +13,7 @@ var Ship;
 
   var BASE_DEFENSE = 10.0
     , BASE_RAD = 1.0
-    , BASE_ACCEL = 0.5;
+    , BASE_ACCEL = 0.4;
 
   /**
    * Base Ship class
@@ -27,8 +27,7 @@ var Ship;
     this.armor = BASE_DEFENSE;
     this.shield = BASE_DEFENSE;
     this.accel = BASE_ACCEL;
-
-    this.initView();
+    this.shooting = false;
   };
   // Inherits from Movable
   Ship.prototype = Object.create(Movable.prototype);
@@ -37,6 +36,26 @@ var Ship;
    * Update orientation, acceleration, target, etc
    */
   Ship.prototype.react = function () {
+  };
+
+  Ship.prototype.faceCoord = function (coord) {
+    var dir = vec3.create();
+    vec3.subtract(dir, coord, this.position);
+    this.rotation = Math.atan2(dir[1], dir[0]);
+  };
+
+  Ship.prototype.shoot = function (tick) {
+    if (!this.weapon) {
+      return;
+    }
+
+    this.weapon.update(tick, this.shooting);
+  };
+
+  Ship.prototype.update = function (tick) {
+    Movable.prototype.update.call(this, tick);
+    this.react();
+    this.shoot(tick);
   };
 
 }());

@@ -20,9 +20,9 @@ var Renderable;
   "use strict";
 
   var vertices = [
-    0.0,  1.0,  0.0,
+    1.0,  0.0,  0.0,
+    -1.0, 1.0,  0.0,
     -1.0, -1.0,  0.0,
-    1.0, -1.0,  0.0,
   ];
 
   var colors = [
@@ -49,7 +49,7 @@ var Renderable;
     }
 
     if (params.position) {
-      this.position = params.position;
+      this.position = vec3.clone(params.position);
     }
 
     if (params.rotation) {
@@ -57,8 +57,10 @@ var Renderable;
     }
 
     if (params.scale) {
-      this.scale = params.scale;
+      this.scale = vec3.clone(params.scale);
     }
+
+    this.initView();
   };
 
   Renderable.prototype.initView = function () {
@@ -67,11 +69,24 @@ var Renderable;
   };
 
   Renderable.prototype.initBuffers = function () {
-    this.initBuffersParams(vertices, colors, indices);
+    this.initBuffersParams(Renderable, vertices, colors, indices);
   };
 
+  Renderable.vertexPositionBuffer = null;
+  Renderable.vertexColorBuffer = null;
+  Renderable.vertexIndexBuffer = null;
+
   Renderable.prototype.initBuffersParams =
-    function (vertices, colors, indicies) {
+    function (thisClass, vertices, colors, indicies) {
+
+    // Ensure that the class only has one copy of the buffers
+    if (thisClass.vertexPositionBuffer) {
+      this.vertexPositionBuffer = thisClass.vertexPositionBuffer;
+      this.vertexColorBuffer = thisClass.vertexColorBuffer;
+      this.vertexIndexBuffer = thisClass.vertexIndexBuffer;
+      return;
+    }
+    console.log("INITALIZING RENDERABLE BUFFERS");
 
     // Vertex Position Buffer
     this.vertexPositionBuffer = gl.createBuffer();
@@ -102,14 +117,26 @@ var Renderable;
     );
     this.vertexIndexBuffer.itemSize = 1;
     this.vertexIndexBuffer.numItems = indices.length / 1;
+
+    thisClass.vertexPositionBuffer = this.vertexPositionBuffer;
+    thisClass.vertexColorBuffer = this.vertexColorBuffer;
+    thisClass.vertexIndexBuffer = this.vertexIndexBuffer;
+
   };
 
   Renderable.prototype.initShaders = function () {
-    this.initShadersPath(vertexShaderPath, fragmentShaderPath);
+    this.initShadersPath(Renderable, vertexShaderPath, fragmentShaderPath);
   };
 
+  Renderable.shaderProgram = null;
+
   Renderable.prototype.initShadersPath =
-    function (vertexShaderPath, fragmentShaderPath) {
+    function (thisClass, vertexShaderPath, fragmentShaderPath) {
+
+    if (thisClass.shaderProgram) {
+      this.shaderProgram = thisClass.shaderProgram;
+      return;
+    }
 
     var self = this;
 

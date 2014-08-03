@@ -27,7 +27,6 @@ var Movable;
    * Update velocity and position
    */
   Movable.prototype.update = function (tick) {
-    this.react();
     vec3.scale(this.accelVec, this.accelDir, this.accel * tick / 1000.0);
 
     vec3.add(this.velocity, this.velocity, this.accelVec);

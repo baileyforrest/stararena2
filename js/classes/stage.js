@@ -34,18 +34,19 @@ var Stage;
       this.ships[i].update(tick);
     }
 
-    for (var j = 0; i < this.projectiles.length; j += 1) {
+    for (var j = 0; j < this.projectiles.length; j += 1) {
       this.projectiles[j].update(tick);
     }
   };
 
-  Stage.prototype.renderAll = function () {
-    this.render();
+  Stage.prototype.render = function () {
+    Renderable.prototype.render.call(this);
+
     for (var i = 0; i < this.ships.length; i += 1) {
       this.ships[i].render();
     }
 
-    for (var j = 0; i < this.projectiles.length; j += 1) {
+    for (var j = 0; j < this.projectiles.length; j += 1) {
       this.projectiles[j].render();
     }
   };

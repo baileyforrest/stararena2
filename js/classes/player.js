@@ -3,7 +3,7 @@
  *
  * Player class
  */
-/* global Ship, controller, Util */
+/* global Ship, controller, Util, Weapon */
 
 var Player;
 
@@ -35,6 +35,14 @@ var Player;
     }
 
     this.mousePos = controller.getMouseCoord();
+
+    this.weapons = [
+      new Weapon({
+        ship: this
+      })
+    ];
+
+    this.weapon = this.weapons[0];
   };
   // Inherits from Ship
   Player.prototype = Object.create(Ship.prototype);
@@ -63,9 +71,15 @@ var Player;
 
     // Handle rotation
     var worldCoord = Util.screenToWorld(this.mousePos);
-    var mouseVec = vec3.create();
-    vec3.subtract(mouseVec, worldCoord, this.position);
-    this.rotation = Math.atan2(mouseVec[1], mouseVec[0]) - Math.PI / 2;
+    //this.faceCoord(worldCoord);
+    this.faceCoord(vec3.create(3.0, 0, 0));
+
+    // Handle Shooting
+    if (this.controller.isMouseDown) {
+      this.shooting = true;
+    } else {
+      this.shooting = false;
+    }
   };
 
   Player.prototype.update = function (tick) {
