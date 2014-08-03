@@ -19,19 +19,19 @@ var Renderable;
 (function () {
   "use strict";
 
-  var vertices = [
+  var VERTICES = [
     1.0,  0.0,  0.0,
     -1.0, 1.0,  0.0,
     -1.0, -1.0,  0.0,
   ];
 
-  var colors = [
+  var COLORS = [
     1.0, 0.0, 0.0, 1.0,
     0.0, 1.0, 0.0, 1.0,
     0.0, 0.0, 1.0, 1.0,
   ];
 
-  var indices = [
+  var INDICES = [
     0, 1, 2
   ];
 
@@ -43,6 +43,8 @@ var Renderable;
     this.rotation = 0.0;
     this.scale = vec3.fromValues(1.0, 1.0, 1.0);
     this.filesLoaded = false;
+
+    this.initView();
 
     if (!params) {
       return;
@@ -59,8 +61,6 @@ var Renderable;
     if (params.scale) {
       this.scale = vec3.clone(params.scale);
     }
-
-    this.initView();
   };
 
   Renderable.prototype.initView = function () {
@@ -69,7 +69,7 @@ var Renderable;
   };
 
   Renderable.prototype.initBuffers = function () {
-    this.initBuffersParams(Renderable, vertices, colors, indices);
+    this.initBuffersParams(Renderable, VERTICES, COLORS, INDICES);
   };
 
   Renderable.vertexPositionBuffer = null;
@@ -77,7 +77,8 @@ var Renderable;
   Renderable.vertexIndexBuffer = null;
 
   Renderable.prototype.initBuffersParams =
-    function (thisClass, vertices, colors, indicies) {
+    function (thisClass, vertices, colors, indices) {
+
 
     // Ensure that the class only has one copy of the buffers
     if (thisClass.vertexPositionBuffer) {
@@ -216,6 +217,7 @@ var Renderable;
 
     this.setMatrixUniforms();
 
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.vertexIndexBuffer);
     gl.drawElements(
       gl.TRIANGLES, this.vertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0
     );

@@ -4,30 +4,30 @@
  * Base projectile class
  */
 
-/* global Movable */
+/* global Movable, Util, stage */
 
 var Projectile;
 
 (function () {
   "use strict";
 
-  var vertices = [
+  var VERTICES = [
     0.0,  0.2,  0.0,
     -0.2, -0.2,  0.0,
     0.2, -0.2,  0.0,
   ];
 
-  var colors = [
+  var COLORS = [
     1.0, 0.0, 0.0, 1.0,
     0.0, 1.0, 0.0, 1.0,
     0.0, 0.0, 1.0, 1.0,
   ];
 
-  var indices = [
+  var INDICES = [
     0, 1, 2
   ];
 
-  var INITIAL_VELOCITY = 1.0
+  var INITIAL_VELOCITY = 0.5
     , BASE_RADIUS = 0.2
     , BASE_DAMAGE = 5
   ;
@@ -59,7 +59,16 @@ var Projectile;
   Projectile.prototype = Object.create(Movable.prototype);
 
   Projectile.prototype.initBuffers = function () {
-    this.initBuffersParams(Projectile, vertices, colors, indices);
+    this.initBuffersParams(Projectile, VERTICES, COLORS, INDICES);
+  };
+
+  Projectile.prototype.update = function (tick) {
+    if (!stage.isInside(this)) {
+      Util.arrayRemove(stage.projectiles, this);
+      return;
+    }
+
+    Movable.prototype.update.call(this, tick);
   };
 
 }());

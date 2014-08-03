@@ -11,7 +11,7 @@ var Weapon;
 (function () {
   "use strict";
 
-  var BASE_FIRE_RATE = 500;
+  var BASE_FIRE_RATE = 250;
 
   Weapon = function (params) {
     this.projectile = Projectile;

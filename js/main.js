@@ -82,8 +82,6 @@ var main;
       }
     }));
 
-    stage.addProjectile(new Projectile({ position: vec3.fromValues(3.0, 0.0, 0.0) }));
-
     tick();
   };
 

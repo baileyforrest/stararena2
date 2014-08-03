@@ -132,4 +132,14 @@ var Util;
     }
   };
 
+  /**
+   * Removes an object from an array
+   */
+  Util.arrayRemove = function (arr, obj) {
+    var index = arr.indexOf(obj);
+    if (index > -1) {
+      arr.splice(index, 1);
+    }
+  };
+
 }());

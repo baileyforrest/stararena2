@@ -10,6 +10,22 @@ var Player;
 (function () {
   "use strict";
 
+  var VERTICES = [
+    1.0,  0.0,  0.0,
+    -1.0, 1.0,  0.0,
+    -1.0, -1.0,  0.0,
+  ];
+
+  var COLORS = [
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+  ];
+
+  var INDICES = [
+    0, 1, 2
+  ];
+
   // TODO DEV only - dvorak keys
   var DEFAULT_UP = [188]
     , DEFAULT_DOWN = [79]
@@ -47,6 +63,12 @@ var Player;
   // Inherits from Ship
   Player.prototype = Object.create(Ship.prototype);
 
+  // Override buffers
+  Player.prototype.initBuffers = function () {
+    this.initBuffersParams(Player, VERTICES, COLORS, INDICES);
+  };
+
+
   Player.prototype.react = function () {
     this.accelDir = vec3.fromValues(0.0, 0.0, 0.0);
 
@@ -71,7 +93,6 @@ var Player;
 
     // Handle rotation
     var worldCoord = Util.screenToWorld(this.mousePos);
-    console.log([worldCoord[0], worldCoord[1]]);
     this.faceCoord(worldCoord);
 
     // Handle Shooting
