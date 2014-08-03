@@ -74,7 +74,6 @@ var main;
     controller.registerEvents(canvas);
 
     stage.addShip(new Ship({ position: vec3.fromValues(-3.0, 0.0, 0.0) }));
-    stage.addShip(new Ship({ position: vec3.fromValues(-3.0, 0.0, 0.0) }));
     stage.addShip(new Player({
       position: vec3.fromValues(3.0, 0.0, 0.0)
     , updateCallback: function (player) {

@@ -71,8 +71,8 @@ var Player;
 
     // Handle rotation
     var worldCoord = Util.screenToWorld(this.mousePos);
-    //this.faceCoord(worldCoord);
-    this.faceCoord(vec3.create(3.0, 0, 0));
+    console.log([worldCoord[0], worldCoord[1]]);
+    this.faceCoord(worldCoord);
 
     // Handle Shooting
     if (this.controller.isMouseDown) {
