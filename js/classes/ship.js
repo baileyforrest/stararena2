@@ -53,8 +53,8 @@ var Ship;
   };
 
   Ship.prototype.update = function (tick) {
-    Movable.prototype.update.call(this, tick);
     this.react();
+    Movable.prototype.update.call(this, tick);
     this.shoot(tick);
   };
 
