@@ -42,7 +42,6 @@ var Renderable;
     this.position = vec3.fromValues(0.0, 0.0, 0.0);
     this.rotation = 0.0;
     this.scale = vec3.fromValues(1.0, 1.0, 1.0);
-    this.filesLoaded = false;
 
     this.initView();
 
@@ -169,13 +168,7 @@ var Renderable;
       self.shaderProgram.mvMatrixUniform =
         gl.getUniformLocation(self.shaderProgram, "uMVMatrix");
 
-      self.filesLoaded = true;
-
-      console.log("loaded shader");
-
-      // TODO: performance critical, find out why this doesn't work (otherwise
-      // the shader is recreated on every Renderable creation...
-      //thisClass.shaderProgram = self.shaderProgram;
+      thisClass.shaderProgram = self.shaderProgram;
     });
 
   };
@@ -196,10 +189,6 @@ var Renderable;
   };
 
   Renderable.prototype.render = function () {
-    if (!this.filesLoaded) {
-      return;
-    }
-
     this.useShaders();
 
     Util.mvPushMatrix();
@@ -222,9 +211,8 @@ var Renderable;
       this.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0
     );
 
-    this.setMatrixUniforms();
-
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.vertexIndexBuffer);
+    this.setMatrixUniforms();
     gl.drawElements(
       gl.TRIANGLES, this.vertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0
     );

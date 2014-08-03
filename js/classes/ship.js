@@ -109,6 +109,9 @@ var Ship;
         } else {
           dHull += this.hull;
           this.hull = 0;
+        }
+
+        if (this.hull <= 0) {
           died = true;
         }
       }

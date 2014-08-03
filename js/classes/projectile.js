@@ -51,7 +51,7 @@ var Projectile;
       vec3.add(this.velocity, this.velocity, params.velocity);
     }
 
-    if (params.ownder) {
+    if (params.owner) {
       this.owner = params.owner;
     }
   };
@@ -71,7 +71,27 @@ var Projectile;
       return;
     }
 
+    // TODO: add sphere intersect function to util
     // Check if collided with target
+    for (var i = 0; i < stage.ships.length; i += 1) {
+      var ship = stage.ships[i];
+
+      // Owner can't hit himself
+      // TODO: maybe change this
+      if (ship === this.owner) {
+        continue;
+      }
+      var direction = vec3.create();
+      vec3.subtract(direction, this.position, ship.position);
+      var distance = vec3.length(direction);
+      vec3.normalize(direction, direction);
+
+      if (distance < this.radius + ship.radius) {
+        ship.takeDamage(this.damage, direction);
+        stage.removeProjectile(this);
+        return;
+      }
+    }
   };
 
 }());
