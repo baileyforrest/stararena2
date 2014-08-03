@@ -4,7 +4,7 @@
  * Base projectile class
  */
 
-/* global Movable, Util, stage */
+/* global Movable, stage */
 
 var Projectile;
 
@@ -63,12 +63,15 @@ var Projectile;
   };
 
   Projectile.prototype.update = function (tick) {
+    Movable.prototype.update.call(this, tick);
+
+    // Check if out of bounds
     if (!stage.isInside(this)) {
-      Util.arrayRemove(stage.projectiles, this);
+      stage.removeProjectile(this);
       return;
     }
 
-    Movable.prototype.update.call(this, tick);
+    // Check if collided with target
   };
 
 }());

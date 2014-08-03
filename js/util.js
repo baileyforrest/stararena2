@@ -61,7 +61,7 @@ var Util;
 
   Util.loadFile = function (filename, index, callback) {
     var request = new XMLHttpRequest();
-    request.open("GET", filename);
+    request.open("GET", filename, false);
     request.onreadystatechange = function () {
       if (request.readyState == 4) {
         callback(request.responseText, index);

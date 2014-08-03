@@ -25,11 +25,15 @@ var Ship;
     Movable.call(this, params);
 
     this.radius = BASE_RAD;
-    this.hull = BASE_DEFENSE;
-    this.armor = BASE_DEFENSE;
-    this.shield = BASE_DEFENSE;
     this.accel = BASE_ACCEL;
     this.mass = BASE_MASS;
+
+    this.hull = BASE_DEFENSE;
+    this.maxHull = BASE_DEFENSE;
+    this.armor = BASE_DEFENSE;
+    this.maxArmor = BASE_DEFENSE;
+    this.shield = BASE_DEFENSE;
+    this.maxShield = BASE_DEFENSE;
 
     this.shooting = false;
   };
@@ -38,6 +42,8 @@ var Ship;
 
   /**
    * Update orientation, acceleration, target, etc
+   *
+   * AI implementation goes here
    */
   Ship.prototype.react = function () {
   };
@@ -58,21 +64,87 @@ var Ship;
 
   Ship.prototype.update = function (tick) {
     this.react();
+    Movable.prototype.update.call(this, tick);
 
     // Process collision with edges
     stage.collide(this);
 
-    Movable.prototype.update.call(this, tick);
+    // TODO: collide with other ships
+
     this.shoot(tick);
   };
 
+  /**
+   * Process damage taken from given direction
+   *
+   * Direction used for particle effects
+   */
   Ship.prototype.takeDamage = function (damage, direction) {
-    // TDOO: implement this
+    var dShield = 0
+      , dArmor = 0
+      , dHull = 0
+      , died = false
+      , particleParams
+    ;
+
+    if (damage <= this.shield) {
+      dShield += damage;
+      this.shield -= damage;
+    } else {
+      dShield = this.shield;
+      damage -= this.shield;
+      this.shield = 0;
+
+      if (damage <= this.armor) {
+        dArmor += damage;
+        this.armor -= damage;
+      } else {
+        dArmor += this.armor;
+        damage -= this.armor;
+        this.armor = 0;
+
+        if (damage <= this.hull) {
+          dHull += damage;
+          this.hull -= damage;
+        } else {
+          dHull += this.hull;
+          this.hull = 0;
+          died = true;
+        }
+      }
+    }
+
+    // Percent damage used for particle effects
+    particleParams = {
+      pdShield: dShield / this.maxShield
+    , pdArmor: dArmor / this.maxArmor
+    , pdHull: dHull / this.maxHull
+    , direction: direction
+    };
+
+    this.particles(particleParams);
+
+    if (died) {
+      this.die();
+    }
   };
 
   Ship.prototype.die = function () {
-    // TODO: here - remove from ship list, die animation
-    // For player - die animation, game over screen
+    stage.removeShip(this);
+
+    // Blow up with all particle effects from center of ship
+    this.particles({
+      pdShield: 0.0
+    , pdArmor: 0.0
+    , pdHull: 0.0
+    , direction: vec3.fromValues(0.0, 0.0, 0.0)
+    });
+  };
+
+  /**
+   * Setup particle effects to be rendered
+   */
+  Ship.prototype.particles = function (params) {
   };
 
 }());

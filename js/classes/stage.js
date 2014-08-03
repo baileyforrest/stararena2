@@ -3,7 +3,7 @@
  *
  * Class for holding the map and all of its ships
  */
-/* global Renderable */
+/* global Renderable, Util */
 
 var Stage;
 
@@ -229,6 +229,8 @@ var Stage;
 
   /**
    * On collisions, perform mirror reflections
+   *
+   * TODO: possibly make generic collide with normal function
    */
   Stage.prototype.collide = function (ship) {
     var collided = false;
@@ -262,6 +264,14 @@ var Stage;
       vec3.normalize(direction, direction);
       ship.takeDamage(ship.mass * vec3.length(ship.velocity), direction);
     }
+  };
+
+  Stage.prototype.removeShip = function (ship) {
+    Util.arrayRemove(this.ships, ship);
+  };
+
+  Stage.prototype.removeProjectile = function (projectile) {
+    Util.arrayRemove(this.projectiles, projectile);
   };
 
 }());

@@ -51,8 +51,8 @@
   };
 
   Controller.prototype.mouseMove = function (event) {
-    this.mousePos[0] = event.clientX;
-    this.mousePos[1] = event.clientY;
+    this.mousePos[0] = event.offsetX;
+    this.mousePos[1] = event.offsetY;
   };
 
   Controller.prototype.getMouseCoord = function () {

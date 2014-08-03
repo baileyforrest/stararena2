@@ -110,4 +110,12 @@ var Player;
     }
   };
 
+  Player.prototype.die = function () {
+    Ship.prototype.die.call(this);
+
+
+    // TODO: Show gameover, etc
+    console.log("Game Over!");
+  };
+
 }());

@@ -170,7 +170,14 @@ var Renderable;
         gl.getUniformLocation(self.shaderProgram, "uMVMatrix");
 
       self.filesLoaded = true;
+
+      console.log("loaded shader");
+
+      // TODO: performance critical, find out why this doesn't work (otherwise
+      // the shader is recreated on every Renderable creation...
+      //thisClass.shaderProgram = self.shaderProgram;
     });
+
   };
 
   /**
