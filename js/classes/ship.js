@@ -4,7 +4,7 @@
  * Main ship class
  */
 
-/* global Movable */
+/* global Movable, stage */
 
 var Ship;
 
@@ -13,7 +13,9 @@ var Ship;
 
   var BASE_DEFENSE = 10.0
     , BASE_RAD = 1.0
-    , BASE_ACCEL = 0.4;
+    , BASE_ACCEL = 0.4
+    , BASE_MASS = 10.0
+  ;
 
   /**
    * Base Ship class
@@ -27,6 +29,8 @@ var Ship;
     this.armor = BASE_DEFENSE;
     this.shield = BASE_DEFENSE;
     this.accel = BASE_ACCEL;
+    this.mass = BASE_MASS;
+
     this.shooting = false;
   };
   // Inherits from Movable
@@ -54,8 +58,21 @@ var Ship;
 
   Ship.prototype.update = function (tick) {
     this.react();
+
+    // Process collision with edges
+    stage.collide(this);
+
     Movable.prototype.update.call(this, tick);
     this.shoot(tick);
+  };
+
+  Ship.prototype.takeDamage = function (damage, direction) {
+    // TDOO: implement this
+  };
+
+  Ship.prototype.die = function () {
+    // TODO: here - remove from ship list, die animation
+    // For player - die animation, game over screen
   };
 
 }());

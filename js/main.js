@@ -12,7 +12,7 @@ var main;
 (function () {
   "use strict";
 
-  var CAM_DISTANCE = 15.0
+  var CAM_DISTANCE = 25.0
     , cameraX = 0.0
     , cameraY = 0.0
   ;

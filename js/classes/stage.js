@@ -10,8 +10,8 @@ var Stage;
 (function () {
   "use strict";
 
-  var STAGE_WIDTH = 64
-    , STAGE_HEIGHT = 64
+  var STAGE_WIDTH = 80
+    , STAGE_HEIGHT = 80
     , BORDER_WIDTH = 0.3
     , BORDER_COLOR = [1.0, 0.0, 0.0, 1.0]
     , GRID_WIDTH = 0.04
@@ -107,7 +107,6 @@ var Stage;
         if ((i / GRID_SKIP) % ALT_GRID_SKIP !== 0) {
           COLORS.push.apply(COLORS, GRID_COLOR);
         } else {
-          console.log("foo");
           COLORS.push.apply(COLORS, ALT_GRID_COLOR);
         }
       }
@@ -158,7 +157,6 @@ var Stage;
         if ((i / GRID_SKIP) % ALT_GRID_SKIP !== 0) {
           COLORS.push.apply(COLORS, GRID_COLOR);
         } else {
-          console.log("foo");
           COLORS.push.apply(COLORS, ALT_GRID_COLOR);
         }
       }
@@ -172,13 +170,6 @@ var Stage;
       INDICES.push(offset + 0);
     }
   })();
-
-
-  console.log(COLORS);
-  console.log(VERTICES);
-  console.log(INDICES);
-
-  // TODO: need to render background and edges
 
   Stage = function (params) {
     Renderable.call(this, params);
@@ -234,6 +225,43 @@ var Stage;
       movable.position[1] > this.maxY ||
       movable.position[1] < this.minY
     );
+  };
+
+  /**
+   * On collisions, perform mirror reflections
+   */
+  Stage.prototype.collide = function (ship) {
+    var collided = false;
+    var direction = vec3.fromValues(0.0, 0.0, 0.0);
+
+    if (ship.position[0] + ship.radius > this.maxX && ship.velocity[0] > 0.0) {
+      collided = true;
+      ship.velocity[0] = -ship.velocity[0];
+      direction[0] += 1.0;
+    }
+
+    if (ship.position[0] - ship.radius < this.minX && ship.velocity[0] < 0.0) {
+      collided = true;
+      ship.velocity[0] = -ship.velocity[0];
+      direction[0] -= 1.0;
+    }
+
+    if (ship.position[1] + ship.radius > this.maxY && ship.velocity[1] > 0.0) {
+      collided = true;
+      ship.velocity[1] = -ship.velocity[1];
+      direction[1] += 1.0;
+    }
+
+    if (ship.position[1] - ship.radius < this.minY && ship.velocity[1] < 0.0) {
+      collided = true;
+      ship.velocity[1] = -ship.velocity[1];
+      direction[1] -= 1.0;
+    }
+
+    if (collided) {
+      vec3.normalize(direction, direction);
+      ship.takeDamage(ship.mass * vec3.length(ship.velocity), direction);
+    }
   };
 
 }());
