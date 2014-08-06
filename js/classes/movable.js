@@ -19,6 +19,26 @@ var Movable;
     this.accelDir = vec3.fromValues(0.0, 0.0, 0.0);
     this.accelVec = vec3.fromValues(0.0, 0.0, 0.0);
     this.accel = BASE_ACCEL;
+
+    if (!params) {
+      return;
+    }
+
+    if (params.velocity) {
+      this.velocity = vec3.clone(params.velocity);
+    }
+
+    if (params.accelDir) {
+      this.accelDir = vec3.clone(params.accelDir);
+    }
+
+    if (params.accelVec) {
+      this.accelVec = vec3.clone(params.accelVec);
+    }
+
+    if (params.accel) {
+      this.accel = params.accel;
+    }
   };
   // Inherits from renderable
   Movable.prototype = Object.create(Renderable.prototype);

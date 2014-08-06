@@ -6,7 +6,7 @@
  * Uses code based on this: http://learningwebgl.com/blog/?p=2042
  *
  */
-/* global Renderable, Util */
+/* global Movable, Util */
 /* global stage */
 
 var Particle;
@@ -27,7 +27,7 @@ var Particle;
   var buffersInit = false;
 
   Particle = function (params) {
-    Renderable.call(this, params);
+    Movable.call(this, params);
 
     this.color = vec4.fromValues(1.0, 1.0, 1.0, 1.0);
     this.startTime = new Date().getTime();
@@ -58,9 +58,10 @@ var Particle;
 
   };
   // Inherits from renderable
-  Particle.prototype = Object.create(Renderable.prototype);
+  Particle.prototype = Object.create(Movable.prototype);
 
   Particle.prototype.update = function (tick) {
+    Movable.prototype.update.call(this, tick);
     this.curTime += tick;
 
     if (this.curTime - this.startTime > this.maxTime / 2) {

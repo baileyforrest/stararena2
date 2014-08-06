@@ -164,6 +164,7 @@ var Ship;
         position: location
       , color: SHIELD_COLOR
       , radius: this.radius
+      , velocity: this.velocity
       , percent: params.pdShield
       , scale: Util.uniformScale(params.pdShield * 1.5)
       }));
@@ -174,6 +175,7 @@ var Ship;
         position: location
       , color: ARMOR_COLOR
       , radius: this.radius
+      , velocity: this.velocity
       , percent: params.pdArmor
       , scale: Util.uniformScale(params.pdArmor * 1.5)
       }));
@@ -184,6 +186,7 @@ var Ship;
         position: location
       , color: HULL_COLOR
       , radius: this.radius
+      , velocity: this.velocity
       , percent: params.pdHull
       , scale: Util.uniformScale(params.pdHull * 1.5)
       }));
