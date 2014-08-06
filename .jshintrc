@@ -7,6 +7,7 @@
     "module",
     "mat4",
     "mat2",
+    "vec2",
     "vec3",
     "vec4",
     "mvMatrix",

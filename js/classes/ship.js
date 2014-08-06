@@ -4,7 +4,9 @@
  * Main ship class
  */
 
-/* global Movable, stage */
+/* global Movable, Particle, Util */
+/* global stage */
+/* global SHIELD_COLOR, ARMOR_COLOR, HULL_COLOR */
 
 var Ship;
 
@@ -13,7 +15,7 @@ var Ship;
 
   var BASE_DEFENSE = 10.0
     , BASE_RAD = 1.0
-    , BASE_ACCEL = 0.4
+    , BASE_ACCEL = 0.5
     , BASE_MASS = 10.0
   ;
 
@@ -137,9 +139,9 @@ var Ship;
 
     // Blow up with all particle effects from center of ship
     this.particles({
-      pdShield: 0.0
-    , pdArmor: 0.0
-    , pdHull: 0.0
+      pdShield: 1.0
+    , pdArmor: 1.0
+    , pdHull: 1.0
     , direction: vec3.fromValues(0.0, 0.0, 0.0)
     });
   };
@@ -148,6 +150,45 @@ var Ship;
    * Setup particle effects to be rendered
    */
   Ship.prototype.particles = function (params) {
+    var direction = vec3.create()
+      , dirScale = vec3.create()
+      , location = vec3.create()
+    ;
+
+    vec3.normalize(direction, params.direction);
+    vec3.scale(dirScale, direction, this.radius);
+    vec3.add(location, this.position, dirScale);
+
+    if (params.pdShield > 0.0) {
+      stage.addParticle(new Particle({
+        position: location
+      , color: SHIELD_COLOR
+      , radius: this.radius
+      , percent: params.pdShield
+      , scale: Util.uniformScale(params.pdShield * 1.5)
+      }));
+    }
+
+    if (params.pdArmor > 0.0) {
+      stage.addParticle(new Particle({
+        position: location
+      , color: ARMOR_COLOR
+      , radius: this.radius
+      , percent: params.pdArmor
+      , scale: Util.uniformScale(params.pdArmor * 1.5)
+      }));
+    }
+
+    if (params.pdHull > 0.0) {
+      stage.addParticle(new Particle({
+        position: location
+      , color: HULL_COLOR
+      , radius: this.radius
+      , percent: params.pdHull
+      , scale: Util.uniformScale(params.pdHull * 1.5)
+      }));
+    }
+
   };
 
 }());

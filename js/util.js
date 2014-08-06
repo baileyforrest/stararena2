@@ -142,4 +142,9 @@ var Util;
     }
   };
 
+  Util.uniformScale = function (scale) {
+    var out = vec3.fromValues(scale, scale, scale);
+    return out;
+  };
+
 }());

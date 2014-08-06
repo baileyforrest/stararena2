@@ -3,7 +3,6 @@
  */
 
 uniform float uTime;
-uniform vec3 uCenterPosition;
 uniform vec3 uScale;
 uniform mat4 uMVMatrix;
 uniform mat4 uPMatrix;
@@ -18,7 +17,6 @@ varying float vLifetime;
 void main(void) {
   if (uTime <= aLifetime) {
     gl_Position.xyz = aStartPosition + (uTime * aEndPosition) * uScale;
-    gl_Position.xyz += uCenterPosition;
     gl_Position.w = 1.0;
   } else {
     gl_Position = vec4(-1000, -1000, 0, 0);

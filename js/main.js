@@ -87,11 +87,6 @@ var main;
       }
     }));
 
-    stage.addParticle(new Particle({
-      position: vec3.fromValues(4.0, 0.0, 0.0)
-    , scale: vec3.fromValues(2.0, 2.0, 2.0)
-    }));
-
     tick();
   };
 

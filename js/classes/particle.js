@@ -34,6 +34,8 @@ var Particle;
     this.curTime = this.startTime;
     this.maxTime = MAX_TIME;
     this.radius = DEFAULT_RADIUS;
+    this.percent = 1.0;
+    this.rotation = 2 * Math.PI * Math.random();
 
     if (!params) {
       return;
@@ -45,6 +47,13 @@ var Particle;
 
     if (params.radius) {
       this.radius = params.radius;
+    }
+
+    if (params.percent) {
+      if (params.percent > 1.0) {
+        throw "Invalid Percent";
+      }
+      this.percent = params.percent;
     }
 
   };
@@ -182,9 +191,6 @@ var Particle;
       shaderProgram.pointOffsetAttribute =
         gl.getAttribLocation(shaderProgram, "aOffset");
 
-      shaderProgram.centerPositionUniform =
-        gl.getUniformLocation(shaderProgram, "uCenterPosition");
-
       shaderProgram.scaleUniform =
         gl.getUniformLocation(shaderProgram, "uScale");
 
@@ -202,7 +208,7 @@ var Particle;
 
 
       self.shaderProgram = shaderProgram;
-      Particle.shaderProgarm = shaderProgram;
+      Particle.shaderProgram = shaderProgram;
     });
   };
 
@@ -251,11 +257,6 @@ var Particle;
     );
 
     gl.uniform3f(
-      this.shaderProgram.centerPositionUniform,
-      this.position[0], this.position[1], this.position[2]
-    );
-
-    gl.uniform3f(
       this.shaderProgram.scaleUniform,
       this.scale[0], this.scale[1], this.scale[2]
     );
@@ -271,7 +272,12 @@ var Particle;
     );
 
     this.setMatrixUniforms();
-    gl.drawArrays(gl.TRIANGLES, 0, pointLifetimesBuffer.numItems);
+
+    // Only draw specified percent of the particles
+    gl.drawArrays(
+      gl.TRIANGLES, 0,
+      Math.floor(pointLifetimesBuffer.numItems * this.percent)
+    );
 
     Util.mvPopMatrix();
   };
