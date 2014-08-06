@@ -176,6 +176,8 @@ var Stage;
 
     this.ships = [];
     this.projectiles = [];
+    this.particles = [];
+
     this.minX = -STAGE_WIDTH / 2;
     this.maxX = STAGE_WIDTH / 2;
     this.minY = -STAGE_HEIGHT / 2;
@@ -184,16 +186,20 @@ var Stage;
   // Inherits from Renderable
   Stage.prototype = Object.create(Renderable.prototype);
 
-  Stage.prototype.addShip = function (ship) {
-    this.ships.push(ship);
-  };
-
   Stage.prototype.initBuffers = function () {
     this.initBuffersParams(Stage, VERTICES, COLORS, INDICES);
   };
 
+  Stage.prototype.addShip = function (ship) {
+    this.ships.push(ship);
+  };
+
   Stage.prototype.addProjectile = function (projectile) {
     this.projectiles.push(projectile);
+  };
+
+  Stage.prototype.addParticle = function (particle) {
+    this.particles.push(particle);
   };
 
   Stage.prototype.update = function (tick) {
@@ -203,6 +209,10 @@ var Stage;
 
     for (var j = 0; j < this.projectiles.length; j += 1) {
       this.projectiles[j].update(tick);
+    }
+
+    for (var k = 0; k < this.particles.length; k += 1) {
+      this.particles[j].update(tick);
     }
   };
 
@@ -215,6 +225,10 @@ var Stage;
 
     for (var j = 0; j < this.projectiles.length; j += 1) {
       this.projectiles[j].render();
+    }
+
+    for (var k = 0; k < this.particles.length; k += 1) {
+      this.particles[j].render();
     }
   };
 
@@ -272,6 +286,10 @@ var Stage;
 
   Stage.prototype.removeProjectile = function (projectile) {
     Util.arrayRemove(this.projectiles, projectile);
+  };
+
+  Stage.prototype.removeParticle = function (particle) {
+    Util.arrayRemove(this.particles, particle);
   };
 
 }());

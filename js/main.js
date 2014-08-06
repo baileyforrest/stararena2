@@ -5,7 +5,7 @@
  */
 /* global gl:true, requestAnimFrame */
 /* global stage:true, controller:true */
-/* global Stage, Controller, Ship, Player */
+/* global Stage, Controller, Ship, Player, Particle */
 
 var main;
 
@@ -81,6 +81,10 @@ var main;
         cameraY = player.position[1];
       }
     }));
+
+    //stage.addParticle(new Particle({
+    //  position: vec3.fromValues(-3.0, 0.0, 0.0)
+    //}));
 
     tick();
   };

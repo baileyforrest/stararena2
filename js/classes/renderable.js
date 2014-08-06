@@ -14,6 +14,8 @@
  *
  * @class
  */
+/* global Entity */
+
 var Renderable;
 
 (function () {
@@ -39,28 +41,11 @@ var Renderable;
   var fragmentShaderPath = "assets/glsl/basic_fragment.glsl";
 
   Renderable = function (params) {
-    this.position = vec3.fromValues(0.0, 0.0, 0.0);
-    this.rotation = 0.0;
-    this.scale = vec3.fromValues(1.0, 1.0, 1.0);
-
+    Entity.call(this, params);
     this.initView();
-
-    if (!params) {
-      return;
-    }
-
-    if (params.position) {
-      this.position = vec3.clone(params.position);
-    }
-
-    if (params.rotation) {
-      this.rotation = params.rotation;
-    }
-
-    if (params.scale) {
-      this.scale = vec3.clone(params.scale);
-    }
   };
+  // Inherits from entity
+  Renderable.prototype = Object.create(Entity.prototype);
 
   Renderable.prototype.initView = function () {
     this.initBuffers();
