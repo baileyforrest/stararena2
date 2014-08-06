@@ -212,7 +212,7 @@ var Stage;
     }
 
     for (var k = 0; k < this.particles.length; k += 1) {
-      this.particles[j].update(tick);
+      this.particles[k].update(tick);
     }
   };
 
@@ -228,7 +228,7 @@ var Stage;
     }
 
     for (var k = 0; k < this.particles.length; k += 1) {
-      this.particles[j].render();
+      this.particles[k].render();
     }
   };
 

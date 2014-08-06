@@ -37,6 +37,11 @@ var main;
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    // Enable alpha blending
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+
+
     mat4.perspective(
       pMatrix, 45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0
     );
@@ -82,7 +87,10 @@ var main;
       }
     }));
 
-    stage.addParticle(new Particle());
+    stage.addParticle(new Particle({
+      position: vec3.fromValues(4.0, 0.0, 0.0)
+    , scale: vec3.fromValues(2.0, 2.0, 2.0)
+    }));
 
     tick();
   };

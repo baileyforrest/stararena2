@@ -7,13 +7,14 @@
  *
  */
 /* global Renderable, Util */
+/* global stage */
 
 var Particle;
 
 (function () {
   "use strict";
 
-  var DEFAULT_RADIUS = 10.0
+  var DEFAULT_RADIUS = 2.0
     , MAX_TIME = 10000;
 
   var vertexShaderPath = "assets/glsl/particle_vertex.glsl";
@@ -31,8 +32,8 @@ var Particle;
     this.color = vec4.fromValues(1.0, 1.0, 1.0, 1.0);
     this.startTime = new Date().getTime();
     this.curTime = this.startTime;
-    this.radius = DEFAULT_RADIUS;
     this.maxTime = MAX_TIME;
+    this.radius = DEFAULT_RADIUS;
 
     if (!params) {
       return;
@@ -45,6 +46,7 @@ var Particle;
     if (params.radius) {
       this.radius = params.radius;
     }
+
   };
   // Inherits from renderable
   Particle.prototype = Object.create(Renderable.prototype);
@@ -53,7 +55,7 @@ var Particle;
     this.curTime += tick;
 
     if (this.curTime - this.startTime > this.maxTime / 2) {
-      // TODO: remove from stage
+      stage.removeParticle(this);
     }
   };
 
@@ -62,7 +64,7 @@ var Particle;
       return;
     }
 
-    var numParticles = 3000;
+    var numParticles = 500;
 
     var lifetimes = []
       , startPositions = []
@@ -78,9 +80,8 @@ var Particle;
       ];
 
     for (var i = 0; i < numParticles; i += 1)  {
-      var lifetime = (Math.random() * 0.15) + 0.15;
+      var lifetime = (Math.random() * 0.05) + 0.05;
 
-      // TODO: implement radius and direction
       var distance = Math.random() * 0.1 - 0.05;
       var theta = Math.random() * 2 * Math.PI;
       var phi =  Math.random() * 2 * Math.PI;
@@ -89,7 +90,7 @@ var Particle;
       var startY = distance * Math.cos(theta);
       var startZ = distance * Math.sin(phi) * Math.sin(theta);
 
-      distance = Math.random() * 3 - 1;
+      distance = 20 * Math.random();
       theta = Math.random() * 2 * Math.PI;
       phi =  Math.random() * 2 * Math.PI;
 
@@ -184,11 +185,21 @@ var Particle;
       shaderProgram.centerPositionUniform =
         gl.getUniformLocation(shaderProgram, "uCenterPosition");
 
+      shaderProgram.scaleUniform =
+        gl.getUniformLocation(shaderProgram, "uScale");
+
       shaderProgram.colorUniform =
         gl.getUniformLocation(shaderProgram, "uColor");
 
       shaderProgram.timeUniform =
         gl.getUniformLocation(shaderProgram, "uTime");
+
+      shaderProgram.pMatrixUniform =
+        gl.getUniformLocation(shaderProgram, "uPMatrix");
+
+      shaderProgram.mvMatrixUniform =
+        gl.getUniformLocation(shaderProgram, "uMVMatrix");
+
 
       self.shaderProgram = shaderProgram;
       Particle.shaderProgarm = shaderProgram;
@@ -239,13 +250,14 @@ var Particle;
       pointOffsetsBuffer.itemSize, gl.FLOAT, false, 0, 0
     );
 
-    // TODO: move this to top level render function
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-
     gl.uniform3f(
       this.shaderProgram.centerPositionUniform,
       this.position[0], this.position[1], this.position[2]
+    );
+
+    gl.uniform3f(
+      this.shaderProgram.scaleUniform,
+      this.scale[0], this.scale[1], this.scale[2]
     );
 
     gl.uniform4f(
@@ -258,6 +270,7 @@ var Particle;
       (this.curTime - this.startTime) / this.maxTime
     );
 
+    this.setMatrixUniforms();
     gl.drawArrays(gl.TRIANGLES, 0, pointLifetimesBuffer.numItems);
 
     Util.mvPopMatrix();
