@@ -82,9 +82,7 @@ var main;
       }
     }));
 
-    //stage.addParticle(new Particle({
-    //  position: vec3.fromValues(-3.0, 0.0, 0.0)
-    //}));
+    stage.addParticle(new Particle());
 
     tick();
   };

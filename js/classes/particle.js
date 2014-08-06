@@ -206,7 +206,6 @@ var Particle;
 
   Particle.prototype.render = function () {
     this.useShaders();
-    console.log("rendering particle");
 
     Util.mvPushMatrix();
 
