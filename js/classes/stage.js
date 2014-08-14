@@ -3,21 +3,21 @@
  *
  * Class for holding the map and all of its ships
  */
-/* global Renderable, Util */
+/* global Renderable, Util, Movable, Ship */
 
 var Stage;
 
 (function () {
   "use strict";
 
-  var STAGE_WIDTH = 80
-    , STAGE_HEIGHT = 80
+  var STAGE_WIDTH = 160
+    , STAGE_HEIGHT = 160
     , BORDER_WIDTH = 0.3
     , BORDER_COLOR = [1.0, 0.0, 0.0, 1.0]
     , GRID_WIDTH = 0.04
     , GRID_COLOR = [0.0, 0.4, 0.0, 1.0]
     , ALT_GRID_COLOR = [0.0, 0.0, 0.4, 1.0]
-    , GRID_SKIP = 2
+    , GRID_SKIP = 4
     , ALT_GRID_SKIP = 4
   ;
 
@@ -191,6 +191,7 @@ var Stage;
   };
 
   Stage.prototype.addShip = function (ship) {
+    ship.initState();
     this.ships.push(ship);
   };
 
@@ -214,6 +215,8 @@ var Stage;
     for (var k = 0; k < this.particles.length; k += 1) {
       this.particles[k].update(tick);
     }
+
+    this.collideShips();
   };
 
   Stage.prototype.render = function () {
@@ -278,6 +281,35 @@ var Stage;
       vec3.normalize(direction, direction);
       ship.takeDamage(ship.mass * vec3.length(ship.velocity), direction);
     }
+  };
+
+  Stage.prototype.collideShips = function () {
+    var i, j, s1, s2;
+    var v1p = vec2.create();
+    var p1mp2 = vec2.create();
+
+    for (i = 0; i < this.ships.length; i += 1) {
+      s1 = this.ships[i];
+
+      for (j = i + 1; j < this.ships.length; j += 1) {
+        s2 = this.ships[j];
+        if (!Movable.collides(s1, s2)) {
+          continue;
+        }
+        vec2.subtract(v1p, s1.velocity, s2.velocity);
+
+        vec2.subtract(p1mp2, s1.position, s2.position);
+        vec2.normalize(p1mp2, p1mp2);
+
+        // No collision if relative velocity is not positive
+        if (vec2.dot(p1mp2, v1p) >= 0) {
+          continue;
+        }
+
+        Ship.doCollision(s1, s2);
+      }
+    }
+
   };
 
   Stage.prototype.removeShip = function (ship) {

@@ -33,8 +33,17 @@ var Player;
     , DEFAULT_RIGHT = [69]
   ;
 
+  var START_MAX_DEFENSE = 100
+    , START_MAX_ENERGY = 100
+  ;
+
   Player = function (params) {
     Ship.call(this, params);
+
+    this.maxHull = START_MAX_DEFENSE;
+    this.maxArmor = START_MAX_DEFENSE;
+    this.maxShield = START_MAX_DEFENSE;
+    this.maxEnergy = START_MAX_ENERGY;
 
     this.controller = controller;
     this.controls = {

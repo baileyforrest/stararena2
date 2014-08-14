@@ -4,15 +4,15 @@
  * Starting point and top level functions
  */
 /* global gl:true, requestAnimFrame */
-/* global stage:true, controller:true */
-/* global Stage, Controller, Ship, Player, Particle */
+/* global stage:true, controller:true, player:true, ctx2d:true, hud:true */
+/* global Stage, Controller, Ship, Player, Particle, Grunt, Hud */
 
 var main;
 
 (function () {
   "use strict";
 
-  var CAM_DISTANCE = 25.0
+  var CAM_DISTANCE = 50.0
     , cameraX = 0.0
     , cameraY = 0.0
   ;
@@ -26,10 +26,23 @@ var main;
     }
 
     if (!gl) {
-      alert("Could not initialise WebGL, sorry :-(");
+      alert("Could not initialize WebGL!");
     } else {
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.enable(gl.DEPTH_TEST);
+    }
+  }
+
+  function initCtx2d(canvas) {
+    try {
+      ctx2d = canvas.getContext("2d");
+      ctx2d.width = canvas.width;
+      ctx2d.height = canvas.height;
+    } catch (e) {
+    }
+
+    if (!ctx2d) {
+      alert("Could not initialize 2d context!");
     }
   }
 
@@ -59,6 +72,7 @@ var main;
     if (lastTime !== 0) {
       var elapsed = timeNow - lastTime;
 
+      hud.render();
       stage.update(elapsed);
     }
     lastTime = timeNow;
@@ -73,18 +87,48 @@ var main;
 
 
   main = function () {
-    var canvas = document.getElementById("canvas");
-    initGL(canvas);
-    stage = new Stage();
-    controller.registerEvents(canvas);
+    var canvas3d = document.getElementById("canvas3d");
+    var canvas2d = document.getElementById("canvas2d");
+    initGL(canvas3d);
+    initCtx2d(canvas2d);
 
-    stage.addShip(new Ship({ position: vec3.fromValues(-3.0, 0.0, 0.0) }));
-    stage.addShip(new Player({
-      position: vec3.fromValues(3.0, 0.0, 0.0)
+    stage = new Stage();
+    controller.registerEvents(canvas2d);
+
+    player = new Player({
+      position: vec3.fromValues(40.0, 0.0, 0.0)
     , updateCallback: function (player) {
         cameraX = player.position[0];
         cameraY = player.position[1];
       }
+    });
+
+    hud = new Hud({
+      player: player
+    , ctx: ctx2d
+    });
+
+    stage.addShip(player);
+
+    stage.addShip(new Grunt({
+      position: vec3.fromValues(-40.0, 0.0, 0.0)
+    , target: player
+    }));
+    stage.addShip(new Grunt({
+      position: vec3.fromValues(-40.0, 10.0, 0.0)
+    , target: player
+    }));
+    stage.addShip(new Grunt({
+      position: vec3.fromValues(-40.0, 20.0, 0.0)
+    , target: player
+    }));
+    stage.addShip(new Grunt({
+      position: vec3.fromValues(-40.0, -10.0, 0.0)
+    , target: player
+    }));
+    stage.addShip(new Grunt({
+      position: vec3.fromValues(-40.0, -20.0, 0.0)
+    , target: player
     }));
 
     tick();

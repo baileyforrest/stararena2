@@ -50,7 +50,7 @@ var Particle;
     }
 
     if (params.percent) {
-      if (params.percent > 1.0) {
+      if (params.percent > 1.0 || params.percent < 0.0) {
         throw "Invalid Percent";
       }
       this.percent = params.percent;

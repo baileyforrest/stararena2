@@ -24,13 +24,37 @@
 <script type="text/javascript" src="js/classes/particle.js"></script>
 <script type="text/javascript" src="js/classes/ship.js"></script>
 <script type="text/javascript" src="js/classes/player.js"></script>
+<script type="text/javascript" src="js/hud.js"></script>
+<script type="text/javascript" src="js/classes/orbiter.js"></script>
+<script type="text/javascript" src="js/classes/grunt.js"></script>
+
+<!-- Enemies -->
+<script type="text/javascript" src="js/classes/grunt.js"></script>
 
 <script type="text/javascript" src="js/main.js"></script>
+
+<style>
+  .canvas {
+    border: none;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+  }
+
+  #canvas3d {
+    z-index: 0;
+  }
+
+  #canvas2d {
+    z-index: 1;
+  }
+</style>
 </head>
 
 
 <body onload="main();">
-    <canvas id="canvas" style="border: none;" width="1024" height="600"></canvas>
+  <canvas id="canvas3d" class="canvas" width="1280" height="650"></canvas>
+  <canvas id="canvas2d" class="canvas" width="1280" height="650"></canvas>
 </body>
 
 </html>

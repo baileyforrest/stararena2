@@ -8,6 +8,9 @@
 /** The gl context */
 var gl;
 
+/** The 2d canvas context */
+var ctx2d;
+
 /** The model view matrix */
 var mvMatrix = mat4.create();
 
@@ -19,3 +22,9 @@ var controller;
 
 /** The stage */
 var stage;
+
+/** The player */
+var player;
+
+/** The UI */
+var hud;

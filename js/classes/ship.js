@@ -14,9 +14,10 @@ var Ship;
   "use strict";
 
   var BASE_DEFENSE = 10.0
-    , BASE_RAD = 1.0
+    , BASE_RAD = 2.0
     , BASE_ACCEL = 0.5
     , BASE_MASS = 10.0
+    , BASE_ENERGY = 10.0
   ;
 
   /**
@@ -30,17 +31,35 @@ var Ship;
     this.accel = BASE_ACCEL;
     this.mass = BASE_MASS;
 
-    this.hull = BASE_DEFENSE;
     this.maxHull = BASE_DEFENSE;
-    this.armor = BASE_DEFENSE;
     this.maxArmor = BASE_DEFENSE;
-    this.shield = BASE_DEFENSE;
     this.maxShield = BASE_DEFENSE;
+    this.maxEnergy = BASE_ENERGY;
 
     this.shooting = false;
+    this.target = null;
+    this.dead = false;
+
+    if (!params) {
+      return;
+    }
+
+    if (params.target) {
+      this.target = params.target;
+    }
   };
   // Inherits from Movable
   Ship.prototype = Object.create(Movable.prototype);
+
+  /**
+   * Initialize shared but class specific state
+   */
+  Ship.prototype.initState = function () {
+    this.hull = this.maxHull;
+    this.armor = this.maxArmor;
+    this.shield = this.maxShield;
+    this.energy = this.maxEnergy;
+  };
 
   /**
    * Update orientation, acceleration, target, etc
@@ -70,8 +89,6 @@ var Ship;
 
     // Process collision with edges
     stage.collide(this);
-
-    // TODO: collide with other ships
 
     this.shoot(tick);
   };
@@ -136,6 +153,7 @@ var Ship;
 
   Ship.prototype.die = function () {
     stage.removeShip(this);
+    this.dead = true;
 
     // Blow up with all particle effects from center of ship
     this.particles({
@@ -191,7 +209,23 @@ var Ship;
       , scale: Util.uniformScale(params.pdHull * 1.5)
       }));
     }
+  };
 
+  /**
+   * Does not ensure they actually collide for performance reasons
+   *
+   * TODO: implement real formula
+   */
+  Ship.doCollision = function (s1, s2) {
+    vec2.scale(s1.velocity, s1.velocity, -1.0);
+    vec2.scale(s2.velocity, s2.velocity, -1.0);
+
+    // TODO: take damage on collisions
+  };
+
+  Ship.prototype.slowDown = function () {
+    vec3.scale(this.accelDir, this.velocity, -1.0);
+    vec3.normalize(this.accelDir, this.accelDir);
   };
 
 }());

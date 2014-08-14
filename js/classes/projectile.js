@@ -27,7 +27,7 @@ var Projectile;
     0, 1, 2
   ];
 
-  var INITIAL_VELOCITY = 0.5
+  var INITIAL_VELOCITY = 1.0
     , BASE_RADIUS = 0.2
     , BASE_DAMAGE = 5
   ;
@@ -71,7 +71,6 @@ var Projectile;
       return;
     }
 
-    // TODO: add sphere intersect function to util
     // Check if collided with target
     for (var i = 0; i < stage.ships.length; i += 1) {
       var ship = stage.ships[i];
@@ -83,10 +82,8 @@ var Projectile;
       }
       var direction = vec3.create();
       vec3.subtract(direction, this.position, ship.position);
-      var distance = vec3.length(direction);
-      vec3.normalize(direction, direction);
 
-      if (distance < this.radius + ship.radius) {
+      if (Movable.collides(this, ship)) {
         ship.takeDamage(this.damage, direction);
         stage.removeProjectile(this);
         return;

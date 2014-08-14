@@ -10,7 +10,9 @@ var Movable;
 (function () {
   "use strict";
 
-  var BASE_ACCEL = 0.0;
+  var BASE_ACCEL = 0.0
+    , BASE_RADIUS = 1.0
+  ;
 
   Movable = function (params) {
     Renderable.call(this, params);
@@ -19,6 +21,7 @@ var Movable;
     this.accelDir = vec3.fromValues(0.0, 0.0, 0.0);
     this.accelVec = vec3.fromValues(0.0, 0.0, 0.0);
     this.accel = BASE_ACCEL;
+    this.radius = BASE_RADIUS;
 
     if (!params) {
       return;
@@ -53,5 +56,13 @@ var Movable;
     vec3.add(this.position, this.position, this.velocity);
   };
 
+  Movable.collides = function (s1, s2) {
+    var direction = vec3.create();
+    vec3.subtract(direction, s1.position, s2.position);
+    var distance = vec3.length(direction);
+    vec3.normalize(direction, direction);
+
+    return distance < s1.radius + s2.radius;
+  };
 
 }());
