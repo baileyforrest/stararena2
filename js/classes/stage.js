@@ -14,9 +14,9 @@ var Stage;
     , STAGE_HEIGHT = 160
     , BORDER_WIDTH = 0.3
     , BORDER_COLOR = [1.0, 0.0, 0.0, 1.0]
-    , GRID_WIDTH = 0.04
-    , GRID_COLOR = [0.0, 0.4, 0.0, 1.0]
-    , ALT_GRID_COLOR = [0.0, 0.0, 0.4, 1.0]
+    , GRID_WIDTH = 0.15
+    , GRID_COLOR = [0.0, 0.4, 0.0, 0.8]
+    , ALT_GRID_COLOR = [0.0, 0.0, 0.4, 0.8]
     , GRID_SKIP = 4
     , ALT_GRID_SKIP = 4
   ;

@@ -55,6 +55,7 @@ var Weapon;
     , velocity: velocity
     , owner: this.ship
     , position: this.ship.position
+    , rotation: this.ship.rotation
     });
 
     stage.addProjectile(proj);

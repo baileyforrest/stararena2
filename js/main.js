@@ -85,7 +85,6 @@ var main;
     animate();
   }
 
-
   main = function () {
     var canvas3d = document.getElementById("canvas3d");
     var canvas2d = document.getElementById("canvas2d");
@@ -110,26 +109,30 @@ var main;
 
     stage.addShip(player);
 
+    //stage.addShip(new Ship({
+    //  position: vec3.fromValues(-40.0, 0.0, 0.0)
+    //, target: player
+    //}));
     stage.addShip(new Grunt({
       position: vec3.fromValues(-40.0, 0.0, 0.0)
     , target: player
     }));
-    stage.addShip(new Grunt({
-      position: vec3.fromValues(-40.0, 10.0, 0.0)
-    , target: player
-    }));
-    stage.addShip(new Grunt({
-      position: vec3.fromValues(-40.0, 20.0, 0.0)
-    , target: player
-    }));
-    stage.addShip(new Grunt({
-      position: vec3.fromValues(-40.0, -10.0, 0.0)
-    , target: player
-    }));
-    stage.addShip(new Grunt({
-      position: vec3.fromValues(-40.0, -20.0, 0.0)
-    , target: player
-    }));
+    //stage.addShip(new Grunt({
+    //  position: vec3.fromValues(-40.0, 10.0, 0.0)
+    //, target: player
+    //}));
+    //stage.addShip(new Grunt({
+    //  position: vec3.fromValues(-40.0, 20.0, 0.0)
+    //, target: player
+    //}));
+    //stage.addShip(new Grunt({
+    //  position: vec3.fromValues(-40.0, -10.0, 0.0)
+    //, target: player
+    //}));
+    //stage.addShip(new Grunt({
+    //  position: vec3.fromValues(-40.0, -20.0, 0.0)
+    //, target: player
+    //}));
 
     tick();
   };

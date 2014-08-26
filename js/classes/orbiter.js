@@ -26,7 +26,11 @@ var Orbiter;
   // Inherits from Ship
   Orbiter.prototype = Object.create(Ship.prototype);
 
-  // Orbit enemy and shoot leading accounting for velocity
+  /**
+   * Orbit enemy and shoot leading accounting for velocity
+   *
+   * TODO: avoid crashing into each other
+   */
   Orbiter.prototype.react = function () {
     if (!this.target || this.target.dead) {
       this.shooting = false;
