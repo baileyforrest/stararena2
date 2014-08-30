@@ -21,6 +21,29 @@ var Weapon;
     this.ship = params.ship;
   };
 
+  Weapon.prototype.fire = function () {
+    this.fireProjectile(this.ship.rotation);
+  };
+
+  Weapon.prototype.fireProjectile = function (rotation) {
+    var accelDir = vec3.create();
+    accelDir[0] = Math.cos(rotation);
+    accelDir[1] = Math.sin(rotation);
+
+    var velocity = this.ship.velocity;
+    var proj = new this.projectile({
+      owner: this.ship
+    , position: this.ship.position
+    , rotation: this.ship.rotation
+    });
+    proj.launch({
+      accelDir: accelDir
+    , velocity: velocity
+    });
+
+    stage.addProjectile(proj);
+  };
+
   /**
    * Basic projectile firing, just fire forward the direction the ship is
    * facing and with the ship's base velocity
@@ -45,20 +68,7 @@ var Weapon;
       return;
     }
 
-    var accelDir = vec3.fromValues(0.0, 0.0, 0.0);
-    accelDir[0] = Math.cos(this.ship.rotation);
-    accelDir[1] = Math.sin(this.ship.rotation);
-
-    var velocity = this.ship.velocity;
-    var proj = new this.projectile({
-      accelDir: accelDir
-    , velocity: velocity
-    , owner: this.ship
-    , position: this.ship.position
-    , rotation: this.ship.rotation
-    });
-
-    stage.addProjectile(proj);
+    this.fire();
   };
 
 }());

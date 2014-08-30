@@ -18,9 +18,9 @@ var Projectile;
   ];
 
   var COLORS = [
-    1.0, 0.0, 0.0, 1.0,
-    1.0, 0.0, 0.0, 1.0,
-    1.0, 0.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
   ];
 
   var INDICES = [
@@ -37,18 +37,10 @@ var Projectile;
 
     this.radius = BASE_RADIUS;
     this.damage = BASE_DAMAGE;
+    this.initVel = INITIAL_VELOCITY;
 
     if (!params) {
       return;
-    }
-
-    if (params.accelDir) {
-      vec3.normalize(this.accelDir, params.accelDir);
-      vec3.scale(this.velocity, this.accelDir, INITIAL_VELOCITY);
-    }
-
-    if (params.velocity) {
-      vec3.add(this.velocity, this.velocity, params.velocity);
     }
 
     if (params.owner) {
@@ -57,6 +49,22 @@ var Projectile;
   };
   // Inherits from movable
   Projectile.prototype = Object.create(Movable.prototype);
+
+  Projectile.prototype.launch = function (params) {
+    if (!params) {
+      return;
+    }
+
+    if (params.accelDir) {
+      vec3.normalize(this.accelDir, params.accelDir);
+      vec3.scale(this.velocity, this.accelDir, this.initVel);
+    }
+
+    if (params.velocity) {
+      vec3.add(this.velocity, this.velocity, params.velocity);
+    }
+
+  };
 
   Projectile.prototype.initBuffers = function () {
     this.initBuffersParams(Projectile, VERTICES, COLORS, INDICES);

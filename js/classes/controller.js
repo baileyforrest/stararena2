@@ -12,14 +12,25 @@
     this.currentPressedKeys = {};
     this.isMouseDown = false;
     this.mousePos = vec3.fromValues(0.0, 0.0, 0.0);
+    this.keyDownCallbacks = [];
   };
 
   Controller.prototype.keyDown = function (event) {
+    var i;
+
     this.currentPressedKeys[event.keyCode] = true;
+
+    for (i = 0; i < this.keyDownCallbacks.length; i += 1) {
+      this.keyDownCallbacks[i](event.keyCode);
+    }
   };
 
   Controller.prototype.keyUp = function (event) {
     this.currentPressedKeys[event.keyCode] = false;
+  };
+
+  Controller.prototype.registerKeyDownCallback = function (callback) {
+    this.keyDownCallbacks.push(callback);
   };
 
   Controller.prototype.keyIntersect = function (keys) {

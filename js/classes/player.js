@@ -3,7 +3,7 @@
  *
  * Player class
  */
-/* global Ship, controller, Util, Weapon */
+/* global Ship, controller, Util, Weapon, GatlingGun, Shotgun */
 
 var Player;
 
@@ -31,6 +31,13 @@ var Player;
     , DEFAULT_DOWN = [79]
     , DEFAULT_LEFT = [65]
     , DEFAULT_RIGHT = [69]
+
+  // Weapon selection
+    , DEFAULT_W1 = 49
+    , DEFAULT_W2 = 219
+    , DEFAULT_W3 = 222
+    , DEFAULT_W4 = 191
+    , DEFAULT_W5 = 53
   ;
 
   var START_MAX_DEFENSE = 100
@@ -51,6 +58,11 @@ var Player;
     , down: DEFAULT_DOWN
     , left: DEFAULT_LEFT
     , right: DEFAULT_RIGHT
+    , w1: DEFAULT_W1
+    , w2: DEFAULT_W2
+    , w3: DEFAULT_W3
+    , w4: DEFAULT_W4
+    , w5: DEFAULT_W5
     };
 
     if (params.updateCallback) {
@@ -61,11 +73,26 @@ var Player;
 
     this.mousePos = controller.getMouseCoord();
 
+    // TODO: implement other weapons
     this.weapons = [
       new Weapon({
         ship: this
       })
+    , new GatlingGun({
+        ship: this
+      })
+    , new Shotgun({
+        ship: this
+      })
+    , new GatlingGun({
+        ship: this
+      })
+    , new GatlingGun({
+        ship: this
+      })
     ];
+
+    this.registerTapKeys();
 
     this.weapon = this.weapons[0];
   };
@@ -77,10 +104,43 @@ var Player;
     this.initBuffersParams(Player, VERTICES, COLORS, INDICES);
   };
 
+  /**
+   * Register key callbacks that need to be called on keyDown
+   *
+   * This should be used for keys that are not intended to be held down
+   */
+  Player.prototype.registerTapKeys = function () {
+    var self = this;
+    // Weapon selection callbacks
+    controller.registerKeyDownCallback(function (keyCode) {
+      if (keyCode === self.controls.w1) {
+        self.weapon = self.weapons[0];
+      }
+    });
+    controller.registerKeyDownCallback(function (keyCode) {
+      if (keyCode === self.controls.w2) {
+        self.weapon = self.weapons[1];
+      }
+    });
+    controller.registerKeyDownCallback(function (keyCode) {
+      if (keyCode === self.controls.w3) {
+        self.weapon = self.weapons[2];
+      }
+    });
+    controller.registerKeyDownCallback(function (keyCode) {
+      if (keyCode === self.controls.w4) {
+        self.weapon = self.weapons[3];
+      }
+    });
+    controller.registerKeyDownCallback(function (keyCode) {
+      if (keyCode === self.controls.w5) {
+        self.weapon = self.weapons[4];
+      }
+    });
 
-  Player.prototype.react = function () {
-    this.accelDir = vec3.fromValues(0.0, 0.0, 0.0);
+  };
 
+  Player.prototype.handleKeys = function () {
     // Handle motion keys
     if (this.controller.keyUnion(this.controls.up)) {
       this.accelDir[1] += 1.0;
@@ -97,8 +157,15 @@ var Player;
     if (this.controller.keyUnion(this.controls.right)) {
       this.accelDir[0] += 1.0;
     }
-
     vec3.normalize(this.accelDir, this.accelDir);
+
+  };
+
+
+  Player.prototype.react = function () {
+    this.accelDir = vec3.fromValues(0.0, 0.0, 0.0);
+
+    this.handleKeys();
 
     // Handle rotation
     var worldCoord = Util.screenToWorld(this.mousePos);
